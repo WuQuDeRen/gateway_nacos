@@ -1,0 +1,40 @@
+server:
+  port: 8863
+spring:
+  application:
+    name: application-server
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+    alibaba:
+      seata:
+        tx-service-group: ${spring.application.name}-seata-tx-group
+dubbo:
+  application:
+    qos-port: 20221
+    qos-accept-foreign-ip: false
+    qos-enable: false
+  scan:
+    base-packages: com.fj.nacos.application.**.service
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://127.0.0.1:8848
+    check: false
+  consumer:
+    check: false
+    timeout: 2000
+  metadata-report:
+    address: nacos://127.0.0.1:8848
+
+
+
+
+
+
