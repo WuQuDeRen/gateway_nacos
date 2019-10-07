@@ -1,4 +1,4 @@
-package com.fj.nacos.application.config.configuration;
+package com.fj.nacos.gateway.config.configuration;
 
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;

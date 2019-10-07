@@ -1,40 +1,74 @@
 server:
-  port: 8863
+  port: 8862
 spring:
   application:
-    name: application-server
+    name: spring-cloud-gateway
   main:
     allow-bean-definition-overriding: true
   cloud:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
-      config:
-        server-addr: 127.0.0.1:8848
-    alibaba:
-      seata:
-        tx-service-group: ${spring.application.name}-seata-tx-group
-dubbo:
-  application:
-    qos-port: 20221
-    qos-accept-foreign-ip: false
-    qos-enable: false
-  scan:
-    base-packages: com.fj.nacos.application.**.service
-  protocol:
-    name: dubbo
-    port: -1
-  registry:
-    address: nacos://127.0.0.1:8848
-    check: false
-  consumer:
-    check: false
-    timeout: 2000
-  metadata-report:
-    address: nacos://127.0.0.1:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          # 在gateway中将注册中心中大写的服务名在这里转换成小写
+          lower-case-service-id: true
+      routes:
+        - id: application-service
+          uri: lb://application-service
+          order: 0
+          predicates:
+            - Path=/app/**
+    sentinel:
+      transport:
+        dashboard: localhost:8826
+      eager: true
+      datasource:
+        ds1:
+          # nacos数据源配置
+          nacos:
+            server-addr: 127.0.0.1:8848
+            group-id: DEFAULT_GROUP
+            data-id: gw-flow
+            # 限流配置
+            rule-type: gw-flow
+        #            以下是在nacos中配置的规则
+        #            [
+        #              {
+        #                "resource": "application-service",  # 和网关中配置的路由ID相匹配
+        #                "count": 3,
+        #                "paramItem": {
+        #                  "parseStrategy": 3,
+        #                  "fieldName": "name"
+        #                }
+        #              },
+        #              {
+        #                "resource": "applicationServiceGroup",
+        #                "count": 3
+        #              }
+        #            ]
 
-
-
-
-
-
+        ds2:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            group-id: DEFAULT_GROUP
+            data-id: gw-api-group-test
+            #定义api组
+            rule-type: GW_API_GROUP
+#            以下是在nacos中配置的api组，注意这里和上一个限流中的resource: applicationServiceGroup对应
+#            [
+#              {
+#                "apiName": "applicationServiceGroup",
+#                "predicateItems": [
+#                  {
+#                    "pattern": "/app/info"
+#                  },
+#                  {
+#                    "pattern": "/app/app2/**",
+#                    "matchStrategy": 1
+#                  }
+#                ]
+#              }
+#            ]

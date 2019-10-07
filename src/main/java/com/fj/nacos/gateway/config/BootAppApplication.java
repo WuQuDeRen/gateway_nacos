@@ -1,4 +1,4 @@
-package com.fj.nacos.application.config;
+package com.fj.nacos.gateway.config;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
@@ -21,9 +21,9 @@ import org.springframework.context.annotation.PropertySource;
  */
 @SpringBootApplication
 // 指定Bean扫描路径
-@ComponentScan(basePackages = {"com.fj.nacos.application.**"})
+@ComponentScan(basePackages = {"com.fj.nacos.gateway.**"})
 //指定Mapper扫描路径
-@MapperScan(basePackages = {"com.fj.nacos.application.**.dao"})
+@MapperScan(basePackages = {"com.fj.nacos.gateway.**.dao"})
 //// 属性配置类
 //@EnableConfigurationProperties(com.fj.nacos.application.config.configuration.MyConfig.class)
 //// 扫描属性配置文件
